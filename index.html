@@ -11,25 +11,26 @@
 
     body {
       margin: 0;
+      padding: 20px;
       background-color: black;
       color: #00FF00;
       font-family: 'Courier New', monospace;
       font-size: 16px;
       display: flex;
       flex-direction: row;
-      height: 100vh;
+      height: calc(100vh - 40px); /* 20px padding top + bottom */
       overflow: hidden;
+      gap: 20px;
     }
 
     .main-content, .chat-sidebar {
-      padding: 10px;
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
     }
 
     .main-content {
-      flex: 2;
-      display: flex;
-      justify-content: center;
-      align-items: center;
       text-align: center;
     }
 
@@ -44,11 +45,8 @@
     }
 
     .chat-sidebar {
-      flex: 1;
-      display: flex;
-      flex-direction: column;
-      border-left: 2px solid #00FF00;
       max-width: 400px;
+      border-left: 2px solid #00FF00;
     }
 
     .chat-log {
@@ -82,19 +80,20 @@
     @media (max-width: 768px) {
       body {
         flex-direction: column;
-      }
-
-      .main-content {
-        flex: 1;
-        padding: 20px;
+        height: auto;
       }
 
       .chat-sidebar {
-        flex: 1;
         border-left: none;
         border-top: 2px solid #00FF00;
         max-width: none;
         height: 50vh;
+      }
+
+      .main-content {
+        flex: 1;
+        justify-content: center;
+        padding-bottom: 10px;
       }
     }
   </style>
