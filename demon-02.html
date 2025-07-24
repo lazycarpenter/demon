@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>The Demon</title>
+  <style>
+    body {
+      margin: 0;
+      background-color: black;
+      color: #00FF00;
+      font-family: 'Courier New', monospace;
+      font-size: 16px;
+      display: flex;
+      height: 100vh;
+      overflow: hidden;
+    }
+
+    .main-content {
+      flex: 1;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .blink {
+      animation: blink-animation 1s steps(2, start) infinite;
+    }
+
+    @keyframes blink-animation {
+      to {
+        visibility: hidden;
+      }
+    }
+
+    .chat-sidebar {
+      width: 300px;
+      background-color: black;
+      border-left: 2px solid #00FF00;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .chat-log {
+      flex: 1;
+      padding: 10px;
+      overflow-y: auto;
+      white-space: pre-wrap;
+    }
+
+    .chat-input {
+      border-top: 2px solid #00FF00;
+      padding: 10px;
+    }
+
+    .chat-input input {
+      width: 100%;
+      padding: 5px;
+      background: black;
+      color: #00FF00;
+      border: 1px solid #00FF00;
+      font-family: 'Courier New', monospace;
+    }
+
+    ::-webkit-scrollbar {
+      width: 5px;
+    }
+
+    ::-webkit-scrollbar-thumb {
+      background: #00FF00;
+    }
+  </style>
+</head>
+<body>
+  <div class="main-content">
+    <div>
+      <span class="blink">THE DEMON IS WATCHING</span><br /><br />
+      <span>Next transmission: 09.21.25</span>
+    </div>
+  </div>
+
+  <div class="chat-sidebar">
+    <div class="chat-log" id="chatLog"></div>
+    <div class="chat-input">
+      <input type="text" id="chatInput" placeholder="Type and press Enter..." />
+    </div>
+  </div>
+
+  <script>
+    const chatLog = document.getElementById('chatLog');
+    const chatInput = document.getElementById('chatInput');
+
+    // Create or retrieve anonymous username
+    let username = localStorage.getItem('demon_username');
+    if (!username) {
+      username = 'Demon' + Math.floor(Math.random() * 900 + 100); // Demon100–999
+      localStorage.setItem('demon_username', username);
+    }
+
+    // Load chat from localStorage
+    const savedChat = localStorage.getItem('demon_chat');
+    if (savedChat) {
+      chatLog.innerHTML = savedChat;
+      chatLog.scrollTop = chatLog.scrollHeight;
+    }
+
+    chatInput.addEventListener('keypress', function (e) {
+      if (e.key === 'Enter' && chatInput.value.trim() !== '') {
+        const message = chatInput.value;
+        const line = document.createElement('div');
+        line.textContent = `${username}> ${message}`;
+        chatLog.appendChild(line);
+        chatLog.scrollTop = chatLog.scrollHeight;
+        chatInput.value = '';
+
+        // Save updated chat to localStorage
+        localStorage.setItem('demon_chat', chatLog.innerHTML);
+      }
+    });
+  </script>
+</body>
+</html>
