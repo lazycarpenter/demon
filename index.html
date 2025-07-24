@@ -5,6 +5,10 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>The Demon</title>
   <style>
+    * {
+      box-sizing: border-box;
+    }
+
     body {
       margin: 0;
       background-color: black;
@@ -12,15 +16,21 @@
       font-family: 'Courier New', monospace;
       font-size: 16px;
       display: flex;
+      flex-direction: row;
       height: 100vh;
       overflow: hidden;
     }
 
+    .main-content, .chat-sidebar {
+      padding: 10px;
+    }
+
     .main-content {
-      flex: 1;
+      flex: 2;
       display: flex;
       justify-content: center;
       align-items: center;
+      text-align: center;
     }
 
     .blink {
@@ -34,28 +44,27 @@
     }
 
     .chat-sidebar {
-      width: 300px;
-      background-color: black;
-      border-left: 2px solid #00FF00;
+      flex: 1;
       display: flex;
       flex-direction: column;
+      border-left: 2px solid #00FF00;
+      max-width: 400px;
     }
 
     .chat-log {
       flex: 1;
-      padding: 10px;
       overflow-y: auto;
       white-space: pre-wrap;
     }
 
     .chat-input {
       border-top: 2px solid #00FF00;
-      padding: 10px;
+      padding-top: 10px;
     }
 
     .chat-input input {
       width: 100%;
-      padding: 5px;
+      padding: 8px;
       background: black;
       color: #00FF00;
       border: 1px solid #00FF00;
@@ -68,6 +77,25 @@
 
     ::-webkit-scrollbar-thumb {
       background: #00FF00;
+    }
+
+    @media (max-width: 768px) {
+      body {
+        flex-direction: column;
+      }
+
+      .main-content {
+        flex: 1;
+        padding: 20px;
+      }
+
+      .chat-sidebar {
+        flex: 1;
+        border-left: none;
+        border-top: 2px solid #00FF00;
+        max-width: none;
+        height: 50vh;
+      }
     }
   </style>
 </head>
@@ -90,14 +118,12 @@
     const chatLog = document.getElementById('chatLog');
     const chatInput = document.getElementById('chatInput');
 
-    // Create or retrieve anonymous username
     let username = localStorage.getItem('demon_username');
     if (!username) {
-      username = 'Demon' + Math.floor(Math.random() * 900 + 100); // Demon100–999
+      username = 'Demon' + Math.floor(Math.random() * 900 + 100);
       localStorage.setItem('demon_username', username);
     }
 
-    // Load chat from localStorage
     const savedChat = localStorage.getItem('demon_chat');
     if (savedChat) {
       chatLog.innerHTML = savedChat;
@@ -112,8 +138,6 @@
         chatLog.appendChild(line);
         chatLog.scrollTop = chatLog.scrollHeight;
         chatInput.value = '';
-
-        // Save updated chat to localStorage
         localStorage.setItem('demon_chat', chatLog.innerHTML);
       }
     });
