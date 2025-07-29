@@ -3,209 +3,77 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>The Demon</title>
+  <title>ACCESS TERMINAL</title>
   <style>
-    * {
-      box-sizing: border-box;
-    }
-
-    html, body {
-      margin: 0;
-      padding: 20px;
+    body {
       background-color: black;
-      color: #00FF00;
+      color: #00ff00;
       font-family: 'Courier New', monospace;
-      font-size: 16px;
-      height: 100%;
-      overflow: hidden;
-      display: flex;
-      flex-direction: column;
-    }
-
-    .container {
-      flex: 1;
-      display: flex;
-      flex-direction: row;
-      gap: 20px;
-      height: 100%;
-    }
-
-    .main-content, .chat-sidebar {
-      flex: 1;
-      display: flex;
-      flex-direction: column;
-      justify-content: center;
-    }
-
-    .main-content {
-      text-align: center;
-    }
-
-    .chat-sidebar {
-      max-width: 400px;
-      border-left: 2px solid #00FF00;
+      font-size: 1.1rem;
+      padding: 2rem;
       overflow: hidden;
     }
-
-    .chat-log {
-      flex: 1;
-      overflow-y: auto;
-      white-space: pre-wrap;
-      padding: 10px;
+    #terminal {
+      white-space: pre-line;
     }
-
-    .chat-input {
-      border-top: 2px solid #00FF00;
-      padding: 10px;
+    .blinking {
+      display: inline-block;
+      animation: blink 1s steps(1) infinite;
     }
-
-    .chat-input input {
-      width: 100%;
-      padding: 8px;
-      background: black;
-      color: #00FF00;
-      border: 1px solid #00FF00;
-      font-family: 'Courier New', monospace;
-    }
-
-    ::-webkit-scrollbar {
-      width: 5px;
-    }
-
-    ::-webkit-scrollbar-thumb {
-      background: #00FF00;
-    }
-
-    /* Glitch effect */
-    .glitch {
-      position: relative;
-      color: #00FF00;
-    }
-
-    .glitch::before,
-    .glitch::after {
-      content: attr(data-text);
-      position: absolute;
-      left: 0;
-      width: 100%;
-      overflow: hidden;
-      color: #00FF00;
-      clip: rect(0, 0, 0, 0);
-    }
-
-    .glitch::before {
-      animation: glitchTop 2s infinite linear alternate-reverse;
-      opacity: 0.6;
-    }
-
-    .glitch::after {
-      animation: glitchBottom 2.5s infinite linear alternate-reverse;
-      opacity: 0.3;
-    }
-
-    @keyframes glitchTop {
-      0% {
-        clip: rect(0, 9999px, 0, 0);
-        transform: translate(0, 0);
-      }
-      5% {
-        clip: rect(0, 9999px, 5px, 0);
-        transform: translate(-2px, -2px);
-      }
-      10% {
-        clip: rect(0, 9999px, 5px, 0);
-        transform: translate(2px, 2px);
-      }
-      15%, 100% {
-        clip: rect(0, 9999px, 0, 0);
-        transform: translate(0, 0);
-      }
-    }
-
-    @keyframes glitchBottom {
-      0% {
-        clip: rect(0, 9999px, 0, 0);
-        transform: translate(0, 0);
-      }
-      5% {
-        clip: rect(6px, 9999px, 10px, 0);
-        transform: translate(2px, 1px);
-      }
-      10% {
-        clip: rect(6px, 9999px, 10px, 0);
-        transform: translate(-2px, -1px);
-      }
-      15%, 100% {
-        clip: rect(0, 9999px, 0, 0);
-        transform: translate(0, 0);
-      }
-    }
-
-    @media (max-width: 768px) {
-      .container {
-        flex-direction: column;
-        height: 100%;
-      }
-
-      .chat-sidebar {
-        border-left: none;
-        border-top: 2px solid #00FF00;
-        max-width: none;
-        height: 50vh;
-      }
-
-      .main-content {
-        flex: 1;
-        justify-content: center;
-        padding-bottom: 10px;
-      }
+    @keyframes blink {
+      50% { opacity: 0; }
     }
   </style>
 </head>
 <body>
-  <div class="container">
-    <div class="main-content">
-      <div>
-        <span class="glitch" data-text="THE DEMON IS WATCHING">THE DEMON IS WATCHING</span><br /><br />
-        <span>Next transmission: 09.21.25</span>
-      </div>
-    </div>
-
-    <div class="chat-sidebar">
-      <div class="chat-log" id="chatLog"></div>
-      <div class="chat-input">
-        <input type="text" id="chatInput" placeholder="Type and press Enter..." />
-      </div>
-    </div>
-  </div>
+  <div id="terminal"></div>
 
   <script>
-    const chatLog = document.getElementById('chatLog');
-    const chatInput = document.getElementById('chatInput');
+    const lines = [
+      "\n\n> INITIATING CONNECTION...",
+      "> ACCESSING BLACK SITE",
+      "> PERMISSION DENIED",
+      "> SCANNING LOCAL SYSTEM...",
+      "> MATCH FOUND: 1 UNREGISTERED ENTITY",
+      "> IDENTITY UNKNOWN",
+      "> TRACE ACTIVE...",
+      "> \n\nWELCOME TO THE DEMON",
+      "> YOU'VE BEEN SEEN",
+      "> STANDBY FOR SIGNAL...",
+      "\n\n> _"
+    ];
 
-    let username = localStorage.getItem('demon_username');
-    if (!username) {
-      username = 'Demon' + Math.floor(Math.random() * 900 + 100);
-      localStorage.setItem('demon_username', username);
-    }
+    const terminal = document.getElementById('terminal');
+    let index = 0;
 
-    const savedChat = localStorage.getItem('demon_chat');
-    if (savedChat) {
-      chatLog.innerHTML = savedChat;
-      chatLog.scrollTop = chatLog.scrollHeight;
-    }
+    function typeLine() {
+      if (index < lines.length) {
+        const line = lines[index];
+        let charIndex = 0;
+        const lineContainer = document.createElement('div');
+        terminal.appendChild(lineContainer);
 
-    chatInput.addEventListener('keypress', function (e) {
-      if (e.key === 'Enter' && chatInput.value.trim() !== '') {
-        const message = chatInput.value;
-        const line = document.createElement('div');
-        line.textContent = `${username}> ${message}`;
-        chatLog.appendChild(line);
-        chatLog.scrollTop = chatLog.scrollHeight;
-        chatInput.value = '';
-        localStorage.setItem('demon_chat', chatLog.innerHTML);
+        const typeChar = () => {
+          if (charIndex < line.length) {
+            lineContainer.textContent += line[charIndex];
+            charIndex++;
+            setTimeout(typeChar, 25);
+          } else {
+            index++;
+            setTimeout(typeLine, 300);
+          }
+        };
+
+        typeChar();
+      } else {
+        const cursor = document.createElement('span');
+        cursor.classList.add('blinking');
+        cursor.textContent = '_';
+        terminal.appendChild(cursor);
       }
-    });
+    }
+
+    typeLine();
   </script>
 </body>
 </html>
